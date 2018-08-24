@@ -20,8 +20,10 @@ FILES = [
 ]
 WALLET_SCRIPT = "create_wallet.sh"
 
+
 def cmd_wrapper(cmd, prefix=CMD_PREFIX):
     return " ".join([prefix, cmd, '\n'])
+
 
 def process_keys(f, as_list=True):
     keys = []
@@ -38,6 +40,7 @@ def process_keys(f, as_list=True):
                 key_pairs.append(key_pair)
                 key_pair = {}
     return keys if as_list else key_pairs
+
 
 def generate():
     blacklist_prods = []
@@ -61,7 +64,6 @@ def generate():
     peers = ['p2p-peer-address = %s:9876' % IP]
     bios_keys = process_keys('bios_keys')
 
-     
     tmpl = open('docker-compose-tmpl').read()
     keys = process_keys('bp_keys')
 
@@ -123,6 +125,7 @@ def generate_import_script():
         import_script.write(cmd_wrapper(cmd))
     import_script.close()
 
+
 def generate_voters(prods, backlist_prods):
     voter_keys = process_keys('voter_keys', as_list=False)
     account_script = open(FILES[2], 'aw')
@@ -150,6 +153,7 @@ def generate_voters(prods, backlist_prods):
     vote_script.close()
     delegate_script.close()
 
+
 def generate_eosio_token():
     eosio_script = open(FILES[1], 'aw')
     cmd = cmd_wrapper('set contract eosio.token contracts/eosio.token')
@@ -160,6 +164,7 @@ def generate_eosio_token():
     cmd += cmd_wrapper("set contract eosio contracts/eosio.system")
     eosio_script.write(cmd)
     eosio_script.close()
+
 
 def generate_sys_accounts():
     # generate sys account
@@ -173,12 +178,14 @@ def generate_sys_accounts():
         eosio_script.write(cmd_wrapper(cmd.format(pub=pub, account=account)))
     eosio_script.close()
 
+
 def generate_wallet_script():
     wallet_script = open(WALLET_SCRIPT, 'w')
     wallet_script.write(cmd_wrapper("sh -c 'rm /opt/eosio/bin/data-dir/default.wallet' || true", CMD_PREFIX_KEOSD))
     wallet_script.write(cmd_wrapper("sh -c 'rm ~/eosio-wallet/default.wallet' || true", CMD_PREFIX_KEOSD))
     wallet_script.write(cmd_wrapper("cleos wallet create -n default > wallet_password", CMD_PREFIX_KEOSD))
     wallet_script.close()
+
 
 def generate_boot_script():
     start_script = open("boot.sh", 'w')
@@ -202,4 +209,3 @@ if __name__ == '__main__':
     generate_voters(prods, blacklist_prods)
     generate_import_script()
     os.system("chmod u+x *.sh")
-    #print(set(prods) - set(blacklist_prods))

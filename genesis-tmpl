@@ -21,7 +21,7 @@
         "max_authority_depth": 6
     },
     "immutable_parameters": {
-        "min_producer_count": 21
+        "min_producer_count": 3
     },
-    "initial_chain_id": "0000000000000000000000000000000000000000000000000000000000000000"
+    "initial_chain_id": "cec278a9dced800d9a695adc1e265ed11efa0ad8a70cdaac1eb65718bbe2434f"
 }
